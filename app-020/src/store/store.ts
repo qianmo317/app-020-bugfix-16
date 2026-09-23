@@ -33,6 +33,11 @@ function loadState(): AppState {
       const s = JSON.parse(raw) as Partial<AppState>;
       // 缺失的节用默认值补齐（如旧版本数据没有 rules/marks），而不是整体丢弃用户数据
       if (s && Array.isArray(s.buildings) && s.floors) {
+        // 旧版本房间面积按外接矩形缓存，凹/L 形房间偏大：统一按多边形重算，保证
+        // 图面标注、属性面板与校验引擎（人数估算/出口数量）用同一个数
+        for (const f of Object.values(s.floors)) {
+          for (const r of f.rooms) r.areaM2 = polyAreaM2(r.polygon);
+        }
         return {
           buildings: s.buildings,
           floors: s.floors,
@@ -196,6 +201,7 @@ export function moveRoom(floorId: string, roomId: string, dx: number, dy: number
     const r = f.rooms.find((x) => x.id === roomId);
     if (!r) return;
     r.polygon = r.polygon.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+    r.areaM2 = polyAreaM2(r.polygon);
     f.version++;
   });
 }

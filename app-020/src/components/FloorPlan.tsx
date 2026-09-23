@@ -61,7 +61,7 @@ const RoomShape = memo(function RoomShape({
       >
         {room.name}
         <tspan x={cx} dy={480} fontSize={320} fill="#888">
-          {(room.areaM2 / 1000).toFixed(1)}㎡
+          {room.areaM2.toFixed(1)}㎡
         </tspan>
       </text>
     </g>
