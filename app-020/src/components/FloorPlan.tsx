@@ -1,5 +1,6 @@
 import { memo, type PointerEvent as RPointerEvent, type WheelEvent as RWheelEvent } from 'react';
 import type { FacilityKind, Floor, Facility, Pt, Room } from '../model';
+import { polyAreaM2 } from '../lib/geometry';
 import { USAGE_FILLS, FacilityGlyph } from './symbols';
 
 export type Tool = 'select' | 'pan' | 'room' | 'corridor' | FacilityKind;
@@ -61,7 +62,7 @@ const RoomShape = memo(function RoomShape({
       >
         {room.name}
         <tspan x={cx} dy={480} fontSize={320} fill="#888">
-          {(room.areaM2 / 1000).toFixed(1)}㎡
+          {polyAreaM2(room.polygon).toFixed(1)}㎡
         </tspan>
       </text>
     </g>

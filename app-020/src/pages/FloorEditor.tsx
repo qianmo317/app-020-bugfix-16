@@ -5,7 +5,7 @@ import { addRoom, addFacility, deleteFacility, deleteRoom, moveFacility, moveRoo
 import { floorLabel } from '../store/id';
 import { getBlob, putBlob, compressImage } from '../store/db';
 import { uid } from '../store/id';
-import { bboxOf } from '../lib/geometry';
+import { bboxOf, polyAreaM2 } from '../lib/geometry';
 import { computeCoverage, validateFloor } from '../lib/engine';
 import { FloorPlan, mmFromEvent, wheelZoom, type DragState, type Selection, type Tool, type View } from '../components/FloorPlan';
 import { FacilityGlyph, USAGE_FILLS } from '../components/symbols';
@@ -406,7 +406,7 @@ export function FloorEditor({ floorId }: Props) {
               </select>
             </label>
             <label className="row">人数 <input type="number" min={0} value={selRoom.occupants ?? ''} placeholder="按面积估算" onChange={(e) => updateRoom(floorId, selRoom.id, { occupants: e.target.value === '' ? undefined : Number(e.target.value) })} /></label>
-            <p className="hint">面积 {selRoom.areaM2.toFixed(1)}㎡（多边形自动计算）</p>
+            <p className="hint">面积 {polyAreaM2(selRoom.polygon).toFixed(1)}㎡（多边形自动计算）</p>
             <button className="danger" onClick={() => { deleteRoom(floorId, selRoom.id); setSelected(null); }}>删除房间</button>
           </section>
         )}

@@ -38,9 +38,13 @@ export function pointInAnyPoly(p: Pt, polys: Pt[][]): boolean {
   return false;
 }
 
+/** 多边形面积（㎡）：鞋带公式，按多边形本身形状计算，凹多边形（如 L 形）同样准确 */
 export function polyAreaM2(poly: Pt[]): number {
-  const bb = bboxOf([poly]);
-  return ((bb.maxX - bb.minX) * (bb.maxY - bb.minY)) / 1e6;
+  let s = 0;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    s += poly[j].x * poly[i].y - poly[i].x * poly[j].y;
+  }
+  return Math.abs(s / 2) / (MM_PER_M * MM_PER_M);
 }
 
 /** 对齐绝对栅格的多边形内部采样点（含顶点由调用方另行追加） */

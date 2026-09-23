@@ -33,6 +33,12 @@ function loadState(): AppState {
       const s = JSON.parse(raw) as Partial<AppState>;
       // 缺失的节用默认值补齐（如旧版本数据没有 rules/marks），而不是整体丢弃用户数据
       if (s && Array.isArray(s.buildings) && s.floors) {
+        // 旧版本面积按外接矩形计算，L 形等凹多边形偏大；加载时统一按多边形重算缓存值
+        for (const f of Object.values(s.floors)) {
+          for (const r of f.rooms ?? []) {
+            r.areaM2 = polyAreaM2(r.polygon);
+          }
+        }
         return {
           buildings: s.buildings,
           floors: s.floors,

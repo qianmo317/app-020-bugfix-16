@@ -145,7 +145,8 @@ function estimateOccupants(room: Room): number {
   if (room.occupants != null && room.occupants >= 0) return room.occupants;
   const density = OCCUPANCY_DENSITY_M2_PER_PERSON[room.usage] ?? 20;
   if (density <= 0) return 0;
-  return Math.round(room.areaM2 / density);
+  // 与图纸标注、面板展示同源：一律按多边形本身面积，不读缓存的 areaM2
+  return Math.round(polyAreaM2(room.polygon) / density);
 }
 
 const days = (n: number) => n * 24 * 3600 * 1000;
